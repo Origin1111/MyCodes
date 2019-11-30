@@ -1,0 +1,60 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
+class Trie
+{
+private:
+	bool is_string = false;
+	int num=0;
+	Trie* next[26] = { nullptr };
+public:
+	Trie() {}
+	void insert(const string& word)//插入单词
+	{
+		Trie* root = this;
+		for (const auto& w : word) {
+			if (root->next[w - 'a'] == nullptr)root->next[w - 'a'] = new Trie();
+			root = root->next[w - 'a'];
+			root->num++;
+		}
+		root->is_string = true;
+	}
+
+	bool search(const string& word)//查找单词
+	{
+		Trie* root = this;
+		for (const auto& w : word) {
+			if (root->next[w - 'a'] == nullptr)return false;
+			root = root->next[w - 'a'];
+		}
+		return root->is_string;
+	}
+
+	bool startsWith(string prefix,int &n)//查找前缀
+	{
+		Trie* root = this;
+		for (const auto& p : prefix) {
+			if (root->next[p - 'a'] == nullptr)return false;
+			root = root->next[p - 'a'];
+		}
+		n = root->num;
+		return true;
+	}
+};
+
+int _main()
+{
+	Trie* trie = new Trie();
+	trie->insert("apple");
+	int n;
+	cout << trie->search("apple") << endl;
+	cout << trie->search("app") << endl;
+	trie->insert("aple");
+	trie->insert("app");
+	cout << trie->startsWith("ap",n) << endl;
+	trie->insert("app");
+	cout << trie->search("app") << endl;
+	cout << n;
+	//system("pause");
+}
